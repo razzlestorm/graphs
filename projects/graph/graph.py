@@ -13,33 +13,73 @@ class Graph:
         """
         Add a vertex to the graph.
         """
-        pass  # TODO
+        self.vertices[vertex_id] = set()
 
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
         """
-        pass  # TODO
+        self.vertices[v1].add(v2)
 
     def get_neighbors(self, vertex_id):
         """
         Get all neighbors (edges) of a vertex.
         """
-        pass  # TODO
+        return self.vertices[vertex_id]
 
     def bft(self, starting_vertex):
         """
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        
+        # creates queue, adds starting node to queue
+        queue = Queue()
+        queue.enqueue(starting_vertex)
+
+        # check if visited
+        visited = set()
+        path = []
+
+        while queue.size() > 0:
+            current = queue.dequeue()
+            path.append(current)
+            # if not in visited, add to visited
+            if current not in visited:
+                visited.add(current)
+            
+                # get current's neighbors and add to queue
+                neighbors = self.get_neighbors(current)
+                for neighbor in neighbors:
+                    queue.enqueue(neighbor)
+        print(path)
+
 
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        # creates stack, adds starting node to stack
+        stack = Stack()
+        stack.push(starting_vertex)
+
+        # check if visited
+        visited = set()
+        path = []
+
+        while stack.size() > 0:
+            current = stack.pop()
+            # if not in visited, add to visited
+            path.append(current)
+            if current not in visited:
+                visited.add(current)
+
+                # get current's neighbors and add to stack
+                neighbors = self.get_neighbors(current)
+                for neighbor in neighbors:
+                    stack.push(neighbor)
+        print(path)
 
     def dft_recursive(self, starting_vertex):
         """
@@ -48,15 +88,15 @@ class Graph:
 
         This should be done using recursion.
         """
-        pass  # TODO
+        
 
     def bfs(self, starting_vertex, destination_vertex):
         """
         Return a list containing the shortest path from
         starting_vertex to destination_vertex in
-        breath-first order.
+        breadth-first order.
         """
-        pass  # TODO
+        
 
     def dfs(self, starting_vertex, destination_vertex):
         """
