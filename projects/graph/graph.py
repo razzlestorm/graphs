@@ -54,6 +54,8 @@ class Graph:
                     queue.enqueue(neighbor)
         print(path)
 
+        
+
 
     def dft(self, starting_vertex):
         """
@@ -89,13 +91,37 @@ class Graph:
         This should be done using recursion.
         """
         
-
+    # currently adding all nodes to all lists instead of making two unique lists
     def bfs(self, starting_vertex, destination_vertex):
         """
         Return a list containing the shortest path from
         starting_vertex to destination_vertex in
         breadth-first order.
         """
+        # like bft, we're traversing over queue, but keeping track of path in queue
+        q = Queue()
+        # add starting vertex path to path, then adding the path to queue
+        visited = set()
+        q.enqueue([starting_vertex])
+        # check current vertex neighbors for neighbor in neighbors
+        while q.size() > 0:
+            cur_path = q.dequeue() # This is a list of vertices
+            cur_node = cur_path[-1] 
+
+            if cur_node == destination_vertex:
+                return cur_path
+
+            if cur_node not in visited:
+                visited.add(cur_node)
+
+                for neighbor in self.get_neighbors(cur_node): 
+                    n_path = cur_path.copy()
+                    n_path.append(neighbor)
+                    q.enqueue(n_path)
+                    
+                
+
+
         
 
     def dfs(self, starting_vertex, destination_vertex):
@@ -104,7 +130,7 @@ class Graph:
         starting_vertex to destination_vertex in
         depth-first order.
         """
-        pass  # TODO
+        # Like dft, we're traversing over stack.
 
     def dfs_recursive(self, starting_vertex, destination_vertex):
         """
