@@ -91,6 +91,8 @@ class Graph:
         This should be done using recursion.
         """
         
+
+        
     # currently adding all nodes to all lists instead of making two unique lists
     def bfs(self, starting_vertex, destination_vertex):
         """
@@ -110,11 +112,12 @@ class Graph:
 
             if cur_node == destination_vertex:
                 return cur_path
-
+            # making sure it doesn't loop back on itself
             if cur_node not in visited:
                 visited.add(cur_node)
 
                 for neighbor in self.get_neighbors(cur_node): 
+                    # Adding paths of each neighbor to queue to check
                     n_path = cur_path.copy()
                     n_path.append(neighbor)
                     q.enqueue(n_path)
@@ -131,6 +134,27 @@ class Graph:
         depth-first order.
         """
         # Like dft, we're traversing over stack.
+                # like bft, we're traversing over queue, but keeping track of path in queue
+        s = Stack()
+        # add starting vertex path to path, then adding the path to queue
+        visited = set()
+        s.push([starting_vertex])
+        # check current vertex neighbors for neighbor in neighbors
+        while s.size() > 0:
+            cur_path = s.pop() # This is a list of vertices
+            cur_node = cur_path[-1] 
+
+            if cur_node == destination_vertex:
+                return cur_path
+            # making sure it doesn't loop back on itself
+            if cur_node not in visited:
+                visited.add(cur_node)
+
+                for neighbor in self.get_neighbors(cur_node): 
+                    # Adding paths of each neighbor to queue to check
+                    n_path = cur_path.copy()
+                    n_path.append(neighbor)
+                    s.push(n_path)
 
     def dfs_recursive(self, starting_vertex, destination_vertex):
         """
