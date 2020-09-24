@@ -66,8 +66,10 @@ def earliest_ancestor(ancestors, starting_node):
                 parents = g.get_parents(current)
                 for parent in parents:
                     q.enqueue(parent)
-                    print(q.queue)
             else:
+                # This checks if current is in the dictionary of children
+                # if not, it has no parents, and will have been appended to path
+                # if the queue is empty, it will be returned, otherwise the remainining parents are followed
                 pass
     print(path)
     return path[-1] if len(path) > 1 else -1      
