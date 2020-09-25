@@ -112,8 +112,11 @@ stack = deque([player.current_room.id])
 
 while len(stack) > 0:
     cur_room = stack.pop()
-    breakpoint()
-    
+    #breakpoint()
+    # first time we've been in this room
+    if cur_room not in mapped_rooms:
+        mapped_rooms[player.current_room.id] = {key: '?' for key in player.current_room.get_exits()}
+
     if cur_room in mapped_rooms:
         # as we move into '?' room:
         if '?' in mapped_rooms[cur_room].values():
@@ -129,9 +132,7 @@ while len(stack) > 0:
                     ## update the values of direction_to and direction_from in both new/old room keys
                     mapped_rooms[cur_room][k] = new_room
                     mapped_rooms[new_room][get_opposite(k)] = cur_room
-                    # means we aren't done with prev node
-                    if '?' in mapped_rooms[cur_room].values():
-                        stack.append(cur_room)
+                    # append new room player is in to stack
                     stack.append(new_room)
                     break
                 else:
@@ -140,31 +141,33 @@ while len(stack) > 0:
         # means we should be done with this room
         else:
             # find next path
+            if cur_room != player.current_room.id:
+                print(f'ERROR CHECK THIS ROOM: {cur_room}, {player.current_room.id}')
             path = bfs(cur_room, '?')
 
             if path is not None:
                 # translate path to movements:
                 for node in path[1:]:
                     # k = direction, v = node.id
-                    for k, v in mapped_rooms[cur_room].items():
-                        if v == node:
-                            player.travel(k)
-                            traversal_path.append(k)
-                            cur_room = player.current_room.id
+                    try:
+                        for k, v in mapped_rooms[cur_room].items():
+                            if v == node:
+                                player.travel(k)
+                                traversal_path.append(k)
+                                cur_room = player.current_room.id
+                    except KeyError:
+                        
+                        #print(f'{traversal_path}')
+                        #print(f'pathlen: {len(traversal_path)}, dictlen{len(mapped_rooms)}')
+                        #print(mapped_rooms[148])
+                        #print(mapped_rooms)
+                        print('KEYERROR')
                 if cur_room not in stack:            
                     stack.append(cur_room)
             
             else:
-                print(f'traversal path: {traversal_path}')
-                break   
-
-    # first time we've been in this room
-    elif cur_room not in mapped_rooms:
-        mapped_rooms[player.current_room.id] = {key: '?' for key in player.current_room.get_exits()}
-        stack.append(cur_room)
-                
-
-        
+                print(f'traversal path: {traversal_path}\n length: {len(traversal_path)}')
+                break    
 
 
 ## update cost of moving from one room to this new room/update cost to all '?'s?
