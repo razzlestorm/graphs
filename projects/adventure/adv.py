@@ -52,6 +52,8 @@ class PriorityQueue:
         return heapq.heappop(self.elements)[1] 
 
 # Do dijkstra's (returning path) over the mapped rooms, looking for closest '?'
+## Something going wrong in this search, not sure, but I suspect it has to do
+## with finding the '?' in a room's values.
 
 '''def dijkstra_search(mapped, start_room, dest):
     queue = PriorityQueue()
