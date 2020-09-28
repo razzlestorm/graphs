@@ -36,40 +36,56 @@ traversal_path = []
 mapped_rooms = {}
 # create initial key/value (unknown edges) of room
 
-'''
+
 # Set up queue to use:
 class PriorityQueue:
     def __init__(self):
-        self.elements: Array[T] = []
+        self.elements = []
     
-    def empty(self) -> bool:
+    def empty(self):
         return len(self.elements) == 0
     
-    def put(self, item: T, priority: float):
+    def put(self, item, priority):
         heapq.heappush(self.elements, (priority, item))
     
-    def get(self) -> T:
+    def get(self):
         return heapq.heappop(self.elements)[1] 
 
-# Do A* (returning path) over the mapped rooms, looking for closest '?'
-def heuristic(a: source_coords, b: dest_coords) -> float:
-    (x1, y1) = a
-    (x2, y2) = b
-    return abs(x1 - x2) + abs(y1 - y2)
+# Do dijkstra's (returning path) over the mapped rooms, looking for closest '?'
 
-def a_star_search(map, cur_room, goal: ???):
-    frontier = PriorityQueue()
-    frontier.put(cur_room.get_coords())
+'''def dijkstra_search(mapped, start_room, dest):
+    queue = PriorityQueue()
+    queue.put(start_room, 0)
     came_from = {}
     cost_so_far = {}
-    came_from[cur_room] = None
-    cost_so_far[cur_room] = 0    
+    came_from[start_room] = None
+    cost_so_far[start_room] = 0
 
-    while not frontier.empty():
-        current = frontier.get()
-    
-        if current == goal:
-            break'''
+    while not queue.empty():
+        cur_room = queue.get()
+        
+        if dest in mapped[cur_room].values():
+            break
+
+        for neighbor in mapped[cur_room].values():
+            new_cost = cost_so_far[cur_room] + 1
+            if neighbor not in cost_so_far or new_cost < cost_so_far[neighbor]:
+                cost_so_far[neighbor] = new_cost
+                priority = new_cost
+                queue.put(neighbor, priority)
+                came_from[neighbor] = cur_room
+    dest = [k for k in cost_so_far.keys()][-1]
+    return came_from, dest
+
+def rebuild_path(came_from, start_room, dest):
+    cur_room = dest
+    path = []
+    while cur_room != start_room:
+        path.append(cur_room)
+        cur_room = came_from[cur_room]
+    path.append(start_room)
+    path.reverse()
+    return path'''
    
 
 # function to search for path to nearest '?'
@@ -112,7 +128,6 @@ stack = deque([player.current_room.id])
 
 while len(stack) > 0:
     cur_room = stack.pop()
-    #breakpoint()
     # first time we've been in this room
     if cur_room not in mapped_rooms:
         mapped_rooms[player.current_room.id] = {key: '?' for key in player.current_room.get_exits()}
@@ -144,6 +159,8 @@ while len(stack) > 0:
             if cur_room != player.current_room.id:
                 print(f'ERROR CHECK THIS ROOM: {cur_room}, {player.current_room.id}')
             path = bfs(cur_room, '?')
+            # came_from, dest = dijkstra_search(mapped_rooms, cur_room, '?')
+            # path = rebuild_path(came_from, cur_room, dest)
 
             if path is not None:
                 # translate path to movements:
@@ -156,23 +173,17 @@ while len(stack) > 0:
                                 traversal_path.append(k)
                                 cur_room = player.current_room.id
                     except KeyError:
-                        
-                        #print(f'{traversal_path}')
-                        #print(f'pathlen: {len(traversal_path)}, dictlen{len(mapped_rooms)}')
-                        #print(mapped_rooms[148])
-                        #print(mapped_rooms)
+                        print(f'{traversal_path}')
+                        print(f'pathlen: {len(traversal_path)}, dictlen{len(mapped_rooms)}')
+                        print(mapped_rooms)
                         print('KEYERROR')
                 if cur_room not in stack:            
                     stack.append(cur_room)
             
             else:
+                # Search can't find any other '?'s
                 print(f'traversal path: {traversal_path}\n length: {len(traversal_path)}')
                 break    
-
-
-## update cost of moving from one room to this new room/update cost to all '?'s?
-
-
 
 
 # TRAVERSAL TEST
